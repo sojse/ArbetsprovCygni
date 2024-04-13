@@ -1,4 +1,5 @@
 ﻿using RockPaperScissorAPI.Models.Domain;
+using RockPaperScissorAPI.Models.Enums;
 using RockPaperScissorAPI.Services.Interfaces;
 
 namespace RockPaperScissorAPI.Services.Repositories;
@@ -15,5 +16,10 @@ public class InMemoryGameRepository : IGameRepository
     public void CreateGame(Game game)
     {
         _games.Add(game);
+    }
+
+    public Game? GetGame(Guid id)
+    {
+        return _games.FirstOrDefault(g => g.Id == id);
     }
 }
