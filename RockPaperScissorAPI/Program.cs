@@ -12,7 +12,7 @@ builder.Services.AddCors();
 builder.Services.AddControllers();
 
 builder.Services.AddScoped<IGameService, GameService>();
-builder.Services.AddScoped<IGameRepository, InMemoryGameRepository>();
+builder.Services.AddSingleton<IGameRepository, InMemoryGameRepository>();
 
 
 // Configure Swagger
