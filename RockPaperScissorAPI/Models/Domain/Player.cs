@@ -1,6 +1,6 @@
-﻿using RockPaperScissorsAPI.Models.Enums;
+﻿using RockPaperScissorAPI.Models.Enums;
 
-namespace RockPaperScissorsAPI.Models.Domain;
+namespace RockPaperScissorAPI.Models.Domain;
 
 public class Player
 {

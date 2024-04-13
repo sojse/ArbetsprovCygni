@@ -1,4 +1,4 @@
-﻿namespace RockPaperScissorsAPI.Models.Enums;
+﻿namespace RockPaperScissorAPI.Models.Enums;
 
 public enum MoveType
 {
