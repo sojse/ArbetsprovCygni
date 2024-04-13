@@ -21,11 +21,46 @@ public class GameService : IGameService
         var newGame = new Game
         {
             Id = gameId,
-            Players = new List<Player> { new Player { Name = playerName } }, // Add initial player
-            State = GameState.WaitingForPlayer
+            Player1 =  new Player { Name = playerName },
+            State = GameState.WaitingForPlayerToJoin
         };
         _gameRepository.CreateGame(newGame);
 
         return gameId;
+    }
+
+    public string? GetGameById(Guid id)
+    {
+
+        var foundGame = _gameRepository.GetGame(id);
+
+        if (foundGame != null)
+        {
+            if (foundGame.State == GameState.Finished)
+            {
+                string winnerOrDraw = DetermineWinnerOrDraw(foundGame);
+
+                return $"{foundGame.State}: {winnerOrDraw}";
+            }
+            else
+            {
+                // Game is not finished, return only the game state
+                return foundGame.State.ToString();
+            }
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    private string DetermineWinnerOrDraw(Game game)
+    {
+        if (game.Winner != null)
+        {
+            return $"{game.Winner.Name} is the winner!";
+        }
+
+        return "It's a draw!";
     }
 }
