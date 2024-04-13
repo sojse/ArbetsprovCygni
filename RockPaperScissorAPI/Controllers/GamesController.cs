@@ -17,6 +17,28 @@ public class GamesController : Controller
     }
 
     /// <summary>
+    /// Gets one game that is matching the id
+    /// </summary>
+    /// <returns>The state of the game</returns>
+    [HttpGet("{id}")]
+    [Produces("application/json")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public IActionResult GetGame(Guid id)
+    {
+        // behövs felhantering för ifall GUID inte är giltig med en 400 bad request?
+
+        var game = _gameService.GetGameById(id);
+
+        if (game == null)
+        {
+            return NotFound(); // Game not found
+        }
+
+        return Ok(game);
+    }
+
+    /// <summary>
     /// Create a game and adding player one into the game
     /// </summary>
     /// <returns>The ID of the created game</returns>
