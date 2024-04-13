@@ -54,6 +54,28 @@ public class GameService : IGameService
         }
     }
 
+    public JoinGameResult JoinGame(Guid gameId, string playerName)
+    {
+        var game = _gameRepository.GetGame(gameId);
+
+        if (game == null)
+        {
+            return JoinGameResult.GameNotFound;
+        }
+
+        if (game.State == GameState.BothPlayersHaveJoined)
+        {
+            return JoinGameResult.GameAlreadyFull;
+        }
+
+        game.State = GameState.BothPlayersHaveJoined;
+        game.Player2 = new Player { Name = playerName };
+
+        _gameRepository.UpdateGame(game);
+
+        return JoinGameResult.Success;
+    }
+
     private string DetermineWinnerOrDraw(Game game)
     {
         if (game.Winner != null)
