@@ -6,4 +6,6 @@ public interface IGameRepository
 {
     void CreateGame(Game game);
     Game? GetGame(Guid id);
+
+    void UpdateGame(Game game);
 }

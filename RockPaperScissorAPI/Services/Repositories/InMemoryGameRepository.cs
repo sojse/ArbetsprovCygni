@@ -22,4 +22,17 @@ public class InMemoryGameRepository : IGameRepository
     {
         return _games.FirstOrDefault(g => g.Id == id);
     }
+
+    public void UpdateGame(Game game)
+    {
+        var existingGame = _games.FirstOrDefault(g => g.Id == game.Id);
+        if (existingGame != null)
+        {
+            existingGame.State = game.State;
+            existingGame.Player1 = game.Player1;
+            existingGame.Player2 = game.Player2;
+            existingGame.Winner = game.Winner;
+            existingGame.Result = game.Result;
+        }
+    }
 }
