@@ -2,7 +2,8 @@
 
 public enum GameState
 {
-    WaitingForPlayer,
+    WaitingForPlayerToJoin,
     InProgress,
+    WaitingForPlayerToMove,
     Finished
 }
