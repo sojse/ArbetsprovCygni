@@ -1,11 +1,20 @@
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using RockPaperScissorAPI.Services.Interfaces;
+using RockPaperScissorAPI.Services.Repositories;
+using RockPaperScissorAPI.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+builder.Services.AddScoped<IGameService, GameService>();
+builder.Services.AddScoped<IGameRepository, InMemoryGameRepository>();
+
+
+// Configure Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
