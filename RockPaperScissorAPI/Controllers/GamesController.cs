@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RockPaperScissorAPI.Models.DTO;
+using RockPaperScissorAPI.Models.Enums;
 using RockPaperScissorAPI.Services;
 
 namespace RockPaperScissorAPI.Controllers;
@@ -68,6 +69,35 @@ public class GamesController : Controller
         }
     }
 
+    /// <summary>
+    /// Lets palyer 2 join the game and updates the game state
+    /// </summary>
+    [HttpPut("{id}/join")]
+    [Consumes("application/json")]
+    [Produces("application/json")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public IActionResult JoinGame(Guid id, GameRequestDto request)
+    {
+        if (request == null || string.IsNullOrWhiteSpace(request.Player))
+        {
+            return BadRequest("Player name is required.");
+        }
 
+        var result = _gameService.JoinGame(id, request.Player);
+
+        switch (result)
+        {
+            case JoinGameResult.Success:
+                return Ok("Player joined successfully.");
+            case JoinGameResult.GameNotFound:
+                return NotFound();
+            case JoinGameResult.GameAlreadyFull:
+                return BadRequest("The game is already full.");
+            default:
+                return StatusCode(500, "An error occurred."); // Handle unexpected result
+        }
+    }
 
 }
