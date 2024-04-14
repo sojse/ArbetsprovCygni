@@ -1,6 +1,14 @@
-﻿namespace RockPaperScissorAPI.Models.DTO;
+﻿using RockPaperScissorAPI.Utils;
+
+namespace RockPaperScissorAPI.Models.DTO;
 
 public class GameRequestDto
 {
-    public required string PlayerName { get; set; }
+    private string _playerName;
+    public string PlayerName
+    {
+        get => _playerName;
+        set => _playerName = UserInputSanitizer.Sanitize(value);
+    }
+
 }

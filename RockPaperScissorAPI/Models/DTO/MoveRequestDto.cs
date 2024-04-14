@@ -1,10 +1,16 @@
 ﻿using RockPaperScissorAPI.Models.Enums;
+using RockPaperScissorAPI.Utils;
 
 namespace RockPaperScissorAPI.Models.DTO;
 
 public class MoveRequestDto
 {
-    public required string PlayerName { get; set; }
-    public required string Move { get; set; }
+    private string _playerName;
+    public string PlayerName
+    {
+        get => _playerName;
+        set => _playerName = UserInputSanitizer.Sanitize(value);
+    }
+    public string Move { get; set; }
 }
 
