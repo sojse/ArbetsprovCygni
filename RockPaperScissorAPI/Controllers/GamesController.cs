@@ -101,4 +101,37 @@ public class GamesController : Controller
         }
     }
 
+    /// <summary>
+    /// Make a move in the game
+    /// </summary>
+    /// <returns>A message about the move state</returns>
+    [HttpPut("{id}/move")]
+    [Consumes("application/json")]
+    [Produces("application/json")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public IActionResult MakeMove(Guid id, MoveRequestDto request)
+    {
+        var result = _gameService.MakeMove(id, request);
+
+        switch (result)
+        {
+            case MoveResult.Success:
+                return Ok("Move successful.");
+            case MoveResult.GameNotFound:
+                return NotFound();
+            case MoveResult.PlayerNotFound:
+                return BadRequest("Player not found in the game.");
+            case MoveResult.InvalidMove:
+                return BadRequest("Invalid move.");
+            case MoveResult.PlayerAlreadyMoved:
+                return BadRequest("Player have already made their move.");
+            case MoveResult.GameFinished:
+                return BadRequest("The game has already finished.");
+            default:
+                return StatusCode(500, "An error occurred.");
+        }
+    }
+
 }
