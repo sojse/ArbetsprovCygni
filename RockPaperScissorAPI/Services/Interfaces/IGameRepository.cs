@@ -4,8 +4,7 @@ namespace RockPaperScissorAPI.Services.Interfaces;
 
 public interface IGameRepository
 {
-    void CreateGame(Game game);
-    Game? GetGame(Guid id);
-
-    void UpdateGame(Game game);
+    Task CreateGame(Game game);
+    Task<Game?> GetGame(Guid id);
+    Task UpdateGame(Game game);
 }

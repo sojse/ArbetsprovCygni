@@ -6,8 +6,8 @@ namespace RockPaperScissorAPI.Services;
 
 public interface IGameService
 {
-    Guid CreateGame(string playerName);
-    string? GetGameById(Guid id);
-    JoinGameResult JoinGame(Guid gameId, string playerName);
-    MoveResult MakeMove(Guid gameId, MoveRequestDto request);
+    Task<Guid> CreateGame(string playerName);
+    Task<string?> GetGameById(Guid id);
+    Task<JoinGameResult> JoinGame(Guid gameId, string playerName);
+    Task<MoveResult> MakeMove(Guid gameId, MoveRequestDto request);
 }

@@ -15,32 +15,31 @@ public class GameService : IGameService
         _gameRepository = gameRepository;
     }
 
-    public Guid CreateGame(string playerName)
+    public async Task<Guid> CreateGame(string playerName)
     {
         Guid gameId = Guid.NewGuid();
 
         var newGame = new Game
         {
             Id = gameId,
-            Player1 =  new Player { Name = playerName },
+            Player1 = new Player { Name = playerName },
             State = GameState.WaitingForPlayerToJoin
         };
-        _gameRepository.CreateGame(newGame);
+
+        await _gameRepository.CreateGame(newGame);
 
         return gameId;
     }
 
-    public string? GetGameById(Guid id)
+    public async Task<string?> GetGameById(Guid id)
     {
-
-        var foundGame = _gameRepository.GetGame(id);
+        var foundGame = await _gameRepository.GetGame(id);
 
         if (foundGame != null)
         {
             if (foundGame.State == GameState.Finished)
             {
                 string winnerOrDraw = DetermineWinnerOrDraw(foundGame);
-
                 return $"{foundGame.State}: {winnerOrDraw}";
             }
             else
@@ -54,9 +53,9 @@ public class GameService : IGameService
         }
     }
 
-    public JoinGameResult JoinGame(Guid gameId, string playerName)
+    public async Task<JoinGameResult> JoinGame(Guid gameId, string playerName)
     {
-        var game = _gameRepository.GetGame(gameId);
+        var game = await _gameRepository.GetGame(gameId);
 
         if (game == null)
         {
@@ -71,14 +70,14 @@ public class GameService : IGameService
         game.State = GameState.BothPlayersHaveJoined;
         game.Player2 = new Player { Name = playerName };
 
-        _gameRepository.UpdateGame(game);
+        await _gameRepository.UpdateGame(game);
 
         return JoinGameResult.Success;
     }
 
-    public MoveResult MakeMove(Guid gameId, MoveRequestDto request)
+    public async Task<MoveResult> MakeMove(Guid gameId, MoveRequestDto request)
     {
-        var game = _gameRepository.GetGame(gameId);
+        var game = await _gameRepository.GetGame(gameId);
 
         if (game == null)
         {
@@ -112,7 +111,7 @@ public class GameService : IGameService
             game.State = GameState.WaitingForOtherPlayerToMove;
         }
 
-        _gameRepository.UpdateGame(game);
+        await _gameRepository.UpdateGame(game);
 
         return MoveResult.Success;
     }

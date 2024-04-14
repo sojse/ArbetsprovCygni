@@ -12,19 +12,19 @@ public class InMemoryGameRepository : IGameRepository
         _games = new List<Game>();
     }
 
-    public void CreateGame(Game game)
+    public async Task CreateGame(Game game)
     {
-        _games.Add(game);
+        await Task.Run(() => _games.Add(game));
     }
 
-    public Game? GetGame(Guid id)
+    public async Task<Game?> GetGame(Guid id)
     {
-        return _games.FirstOrDefault(g => g.Id == id);
+        return await Task.Run(() => _games.FirstOrDefault(g => g.Id == id));
     }
 
-    public void UpdateGame(Game game)
+    public async Task UpdateGame(Game game)
     {
-        var existingGame = _games.FirstOrDefault(g => g.Id == game.Id);
+        var existingGame = await GetGame(game.Id);
         if (existingGame != null)
         {
             existingGame.State = game.State;

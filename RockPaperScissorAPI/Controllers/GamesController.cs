@@ -27,11 +27,9 @@ public class GamesController : Controller
     [Produces("application/json")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public IActionResult GetGame(Guid id)
+    public async Task<IActionResult> GetGame(Guid id)
     {
-        // behövs felhantering för ifall GUID inte är giltig med en 400 bad request?
-
-        var game = _gameService.GetGameById(id);
+        var game = await _gameService.GetGameById(id);
         if (game == null)
         {
             return NotFound(); // Game not found
@@ -49,11 +47,11 @@ public class GamesController : Controller
     [Produces("application/json")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public ActionResult<GameResponseDto> CreateGame(GameRequestDto request)
+    public async Task<ActionResult<GameResponseDto>> CreateGame(GameRequestDto request)
     {
         try
         {
-            var newGame = _gameService.CreateGame(request.PlayerName);
+            var newGame = await _gameService.CreateGame(request.PlayerName);
             var gameResponse = new GameResponseDto
             {
                 Id = newGame,
@@ -78,14 +76,14 @@ public class GamesController : Controller
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public IActionResult JoinGame(Guid id, GameRequestDto request)
+    public async Task<IActionResult> JoinGame(Guid id, GameRequestDto request)
     {
         if (request == null || string.IsNullOrWhiteSpace(request.PlayerName))
         {
             return BadRequest("Player name is required.");
         }
 
-        var result = _gameService.JoinGame(id, request.PlayerName);
+        var result = await _gameService.JoinGame(id, request.PlayerName);
 
         switch (result)
         {
@@ -110,9 +108,9 @@ public class GamesController : Controller
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public IActionResult MakeMove(Guid id, MoveRequestDto request)
+    public async Task<IActionResult> MakeMove(Guid id, MoveRequestDto request)
     {
-        var result = _gameService.MakeMove(id, request);
+        var result = await _gameService.MakeMove(id, request);
 
         switch (result)
         {
