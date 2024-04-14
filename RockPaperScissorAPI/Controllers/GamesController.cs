@@ -30,7 +30,6 @@ public class GamesController : Controller
         // behövs felhantering för ifall GUID inte är giltig med en 400 bad request?
 
         var game = _gameService.GetGameById(id);
-
         if (game == null)
         {
             return NotFound(); // Game not found
@@ -50,11 +49,9 @@ public class GamesController : Controller
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public ActionResult<GameResponseDto> CreateGame(GameRequestDto request)
     {
-
         try
         {
             var newGame = _gameService.CreateGame(request.PlayerName);
-
             var gameResponse = new GameResponseDto
             {
                 Id = newGame,
@@ -133,5 +130,4 @@ public class GamesController : Controller
                 return StatusCode(500, "An error occurred.");
         }
     }
-
 }
