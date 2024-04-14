@@ -1,5 +1,4 @@
 ﻿using RockPaperScissorAPI.Models.Domain;
-using RockPaperScissorAPI.Models.Enums;
 using RockPaperScissorAPI.Services.Interfaces;
 
 namespace RockPaperScissorAPI.Services.Repositories;
@@ -32,7 +31,6 @@ public class InMemoryGameRepository : IGameRepository
             existingGame.Player1 = game.Player1;
             existingGame.Player2 = game.Player2;
             existingGame.Winner = game.Winner;
-            existingGame.Result = game.Result;
         }
     }
 }

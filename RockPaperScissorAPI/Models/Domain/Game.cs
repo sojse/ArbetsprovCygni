@@ -13,7 +13,4 @@ public class Game
     public Player? Winner { get; set; }
 
     public required GameState State { get; set; }
-
-    public GameResult? Result { get; set; }
-
 }
