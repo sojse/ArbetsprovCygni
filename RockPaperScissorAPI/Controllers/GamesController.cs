@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using RockPaperScissorAPI.Models.DTO;
 using RockPaperScissorAPI.Models.Enums;
 using RockPaperScissorAPI.Services;
@@ -7,6 +8,7 @@ namespace RockPaperScissorAPI.Controllers;
 
 [Route("[controller]")]
 [ApiController]
+[EnableRateLimiting("fixed")]
 public class GamesController : Controller
 {
 

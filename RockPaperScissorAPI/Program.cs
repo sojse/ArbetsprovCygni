@@ -3,6 +3,8 @@ using System.Reflection;
 using RockPaperScissorAPI.Services.Interfaces;
 using RockPaperScissorAPI.Services.Repositories;
 using RockPaperScissorAPI.Services;
+using Microsoft.AspNetCore.RateLimiting;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +15,18 @@ builder.Services.AddControllers();
 
 builder.Services.AddScoped<IGameService, GameService>();
 builder.Services.AddSingleton<IGameRepository, InMemoryGameRepository>();
+
+builder.Services.AddRateLimiter((rateLimiterOptions =>
+{
+    rateLimiterOptions.AddFixedWindowLimiter("fixed", options =>
+    {
+        options.PermitLimit = 4;
+        options.Window = TimeSpan.FromSeconds(12);
+        options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+        options.QueueLimit = 2;
+    });
+    rateLimiterOptions.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+}));
 
 
 // Configure Swagger
@@ -41,9 +55,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// Configure the HTTP request pipeline.
-
 app.UseHttpsRedirection();
+
+app.UseRateLimiter();
 
 app.UseAuthorization();
 
