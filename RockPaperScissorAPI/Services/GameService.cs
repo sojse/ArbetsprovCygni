@@ -1,4 +1,5 @@
 ﻿using RockPaperScissorAPI.Models.Domain;
+using RockPaperScissorAPI.Models.DTO;
 using RockPaperScissorAPI.Models.Enums;
 using RockPaperScissorAPI.Services.Interfaces;
 
@@ -44,7 +45,6 @@ public class GameService : IGameService
             }
             else
             {
-                // Game is not finished, return only the game state
                 return foundGame.State.ToString();
             }
         }
@@ -76,6 +76,47 @@ public class GameService : IGameService
         return JoinGameResult.Success;
     }
 
+    public MoveResult MakeMove(Guid gameId, MoveRequestDto request)
+    {
+        var game = _gameRepository.GetGame(gameId);
+
+        if (game == null)
+        {
+            return MoveResult.GameNotFound;
+        }
+
+        var player = FindPlayer(game, request.PlayerName);
+        if (player == null)
+        {
+            return MoveResult.PlayerNotFound;
+        }
+
+        if (game.State == GameState.Finished)
+        {
+            return MoveResult.GameFinished;
+        }
+
+        var validationResult = ValidateAndSetMove(player, request.Move);
+        if (validationResult != MoveResult.Success)
+        {
+            return validationResult;
+        }
+
+        if (game.Player1?.Move != null && game.Player2?.Move != null)
+        {
+            game.State = GameState.Finished;
+            DetermineWinner(game);
+        }
+        else
+        {
+            game.State = GameState.WaitingForOtherPlayerToMove;
+        }
+
+        _gameRepository.UpdateGame(game);
+
+        return MoveResult.Success;
+    }
+
     private string DetermineWinnerOrDraw(Game game)
     {
         if (game.Winner != null)
@@ -84,5 +125,60 @@ public class GameService : IGameService
         }
 
         return "It's a draw!";
+    }
+    private Player? FindPlayer(Game game, string playerName)
+    {
+        if (game.Player1?.Name == playerName)
+        {
+            return game.Player1;
+        }
+        else if (game.Player2?.Name == playerName)
+        {
+            return game.Player2;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    private MoveResult ValidateAndSetMove(Player player, string move)
+    {
+        if (player.Move != null)
+        {
+            return MoveResult.PlayerAlreadyMoved;
+        }
+
+        bool isValidMove = Enum.TryParse<MoveType>(move, true, out MoveType moveType);
+        if (isValidMove)
+        {
+            player.Move = moveType;
+            return MoveResult.Success;
+        }
+        else
+        {
+            return MoveResult.InvalidMove;
+        }
+    }
+
+    private void DetermineWinner(Game game)
+    {
+        var player1Move = game.Player1.Move;
+        var player2Move = game.Player2.Move;
+
+        if (player1Move == player2Move)
+        {
+            game.Winner = null;
+        }
+        else if ((player1Move == MoveType.Rock && player2Move == MoveType.Scissors) ||
+                 (player1Move == MoveType.Scissors && player2Move == MoveType.Paper) ||
+                 (player1Move == MoveType.Paper && player2Move == MoveType.Rock))
+        {
+            game.Winner = game.Player1;
+        }
+        else
+        {
+            game.Winner = game.Player2;
+        }
     }
 }
