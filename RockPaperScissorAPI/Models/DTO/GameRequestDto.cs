@@ -2,5 +2,5 @@
 
 public class GameRequestDto
 {
-    public required string Player { get; set; }
+    public required string PlayerName { get; set; }
 }

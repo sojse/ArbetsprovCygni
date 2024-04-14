@@ -53,7 +53,7 @@ public class GamesController : Controller
 
         try
         {
-            var newGame = _gameService.CreateGame(request.Player);
+            var newGame = _gameService.CreateGame(request.PlayerName);
 
             var gameResponse = new GameResponseDto
             {
@@ -72,6 +72,7 @@ public class GamesController : Controller
     /// <summary>
     /// Lets palyer 2 join the game and updates the game state
     /// </summary>
+    /// <returns>A message about the join state</returns>
     [HttpPut("{id}/join")]
     [Consumes("application/json")]
     [Produces("application/json")]
@@ -80,12 +81,12 @@ public class GamesController : Controller
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public IActionResult JoinGame(Guid id, GameRequestDto request)
     {
-        if (request == null || string.IsNullOrWhiteSpace(request.Player))
+        if (request == null || string.IsNullOrWhiteSpace(request.PlayerName))
         {
             return BadRequest("Player name is required.");
         }
 
-        var result = _gameService.JoinGame(id, request.Player);
+        var result = _gameService.JoinGame(id, request.PlayerName);
 
         switch (result)
         {
