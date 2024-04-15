@@ -26,9 +26,14 @@ public class GameService : IGameService
             State = GameState.WaitingForPlayerToJoin
         };
 
-        await _gameRepository.CreateGame(newGame);
+        var game = await _gameRepository.CreateGame(newGame);
 
-        return gameId;
+        if (game == null)
+        {
+            return Guid.Empty;
+        }
+
+        return game.Id;
     }
 
     public async Task<string?> GetGameById(Guid id)

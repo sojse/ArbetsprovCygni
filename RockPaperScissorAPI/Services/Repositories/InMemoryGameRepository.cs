@@ -12,9 +12,18 @@ public class InMemoryGameRepository : IGameRepository
         _games = new List<Game>();
     }
 
-    public async Task CreateGame(Game game)
+    public async Task<Game?> CreateGame(Game game)
     {
-        await Task.Run(() => _games.Add(game));
+        try
+        {
+            await Task.Run(() => _games.Add(game));
+            return game;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error occurred while creating game: {ex.Message}");
+            return null;
+        }
     }
 
     public async Task<Game?> GetGame(Guid id)
@@ -22,7 +31,7 @@ public class InMemoryGameRepository : IGameRepository
         return await Task.Run(() => _games.FirstOrDefault(g => g.Id == id));
     }
 
-    public async Task UpdateGame(Game game)
+    public async Task<Game?> UpdateGame(Game game)
     {
         var existingGame = await GetGame(game.Id);
         if (existingGame != null)
@@ -31,6 +40,10 @@ public class InMemoryGameRepository : IGameRepository
             existingGame.Player1 = game.Player1;
             existingGame.Player2 = game.Player2;
             existingGame.Winner = game.Winner;
+
+            return existingGame;
         }
+
+        return null;
     }
 }
