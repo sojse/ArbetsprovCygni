@@ -1,14 +1,16 @@
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RockPaperScissorAPI.Controllers;
+using RockPaperScissorAPI.Models.DTO;
+using RockPaperScissorAPI.Models.Enums;
 using RockPaperScissorAPI.Services;
 
 namespace RockPaperScissorsTest;
 
 public class GamesControllerTests
 {
-    private GamesController _controller;
-    private Mock<IGameService> _mockService;
+    private readonly GamesController _controller;
+    private readonly Mock<IGameService> _mockService;
 
     public GamesControllerTests()
     {
@@ -17,7 +19,7 @@ public class GamesControllerTests
     }
 
     [Fact]
-    public async Task GetGame_ReturnsGameGameId_WhenGameExists()
+    public async Task GetGame_ReturnsGameId_WhenGameExists()
     {
 
         Guid gameId = Guid.NewGuid();
@@ -43,5 +45,33 @@ public class GamesControllerTests
         var result = await _controller.GetGame(gameId);
 
         Assert.IsType<NotFoundResult>(result);
+    }
+
+    [Fact]
+    public async Task CreateGame_ShouldCreateGame_WhenGivenValidInformation()
+    {
+        var request = new GameRequestDto { PlayerName = "Alice" };
+        var gameId = Guid.NewGuid();
+        var gameResponse = new GameResponseDto { Id = gameId };
+
+        _mockService.Setup(x => x.CreateGame(It.IsAny<string>()))
+                    .ReturnsAsync(gameId);
+
+        var result = await _controller.CreateGame(request);
+
+        var createdAtActionResult = Assert.IsType<CreatedResult>(result.Result);
+        var gameDto = Assert.IsType<GameResponseDto>(createdAtActionResult.Value);
+        Assert.Equal(gameId, gameDto.Id);
+    }
+
+    [Fact]
+    public async Task CreateGame_ReturnsBadRequest_WhenGivenInvalidInformation()
+    {
+        GameRequestDto request = new GameRequestDto { PlayerName = "" };
+
+        var result = await _controller.CreateGame(request);
+
+        var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
+        Assert.Equal("Player name is required", badRequestResult.Value);
     }
 }
