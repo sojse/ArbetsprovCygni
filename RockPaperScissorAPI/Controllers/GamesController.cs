@@ -88,6 +88,8 @@ public class GamesController : Controller
                 return Ok("Player joined successfully.");
             case JoinGameResult.GameNotFound:
                 return NotFound();
+            case JoinGameResult.MustEnterUniqueName:
+                return BadRequest("Must enter unique name.");
             case JoinGameResult.GameAlreadyFull:
                 return BadRequest("The game is already full.");
             default:

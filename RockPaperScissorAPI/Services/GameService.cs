@@ -2,6 +2,7 @@
 using RockPaperScissorAPI.Models.DTO;
 using RockPaperScissorAPI.Models.Enums;
 using RockPaperScissorAPI.Services.Interfaces;
+using System.Numerics;
 
 namespace RockPaperScissorAPI.Services;
 
@@ -72,6 +73,11 @@ public class GameService : IGameService
             return JoinGameResult.GameAlreadyFull;
         }
 
+        else if (playerName == game.Player1.Name)
+        {
+            return JoinGameResult.MustEnterUniqueName;
+        }
+
         game.State = GameState.BothPlayersHaveJoined;
         game.Player2 = new Player { Name = playerName };
 
@@ -95,25 +101,21 @@ public class GameService : IGameService
             return MoveResult.PlayerNotFound;
         }
 
-        if (game.State == GameState.Finished)
+        if (game.Player1?.Move != null && game.Player2?.Move != null)
         {
+            game.State = GameState.Finished;
+            DetermineWinner(game);
             return MoveResult.GameFinished;
+        }
+        else
+        {
+            game.State = GameState.WaitingForOtherPlayerToMove;
         }
 
         var validationResult = ValidateAndSetMove(player, request.Move);
         if (validationResult != MoveResult.Success)
         {
             return validationResult;
-        }
-
-        if (game.Player1?.Move != null && game.Player2?.Move != null)
-        {
-            game.State = GameState.Finished;
-            DetermineWinner(game);
-        }
-        else
-        {
-            game.State = GameState.WaitingForOtherPlayerToMove;
         }
 
         await _gameRepository.UpdateGame(game);
