@@ -32,7 +32,7 @@ public class GamesController : Controller
         var game = await _gameService.GetGameById(id);
         if (game == null)
         {
-            return NotFound(); // Game not found
+            return NotFound();
         }
 
         return Ok(game);
@@ -49,7 +49,7 @@ public class GamesController : Controller
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<GameResponseDto>> CreateGame(GameRequestDto request)
     {
-        if(request == null || string.IsNullOrWhiteSpace(request.PlayerName))
+        if (request == null || string.IsNullOrWhiteSpace(request.PlayerName))
         {
             return BadRequest("Player name is required");
         }
@@ -93,7 +93,7 @@ public class GamesController : Controller
             case JoinGameResult.GameAlreadyFull:
                 return BadRequest("The game is already full.");
             default:
-                return StatusCode(500, "An error occurred."); // Handle unexpected result
+                return StatusCode(500, "An error occurred.");
         }
     }
 
