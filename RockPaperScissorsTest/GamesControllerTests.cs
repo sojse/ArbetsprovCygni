@@ -119,4 +119,76 @@ public class GamesControllerTests
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
         Assert.Equal("The game is already full.", badRequestResult.Value);
     }
+
+    [Fact]
+    public async Task MakeMove_ReturnsValidRequest_WhenMoveWasSuccessfull()
+    {
+        Guid gameId = Guid.NewGuid();
+        var request = new MoveRequestDto { PlayerName = "Alice", Move = "Rock" };
+
+        _mockService.Setup(x => x.MakeMove(gameId, request))
+                    .ReturnsAsync(MoveResult.Success);
+
+        var result = await _controller.MakeMove(gameId, request);
+
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        Assert.Equal("Move successful.", okResult.Value);
+    }
+
+    [Fact]
+    public async Task MakeMove_ReturnsBadRequest_WhenPlayerNotFound()
+    {
+        Guid gameId = Guid.NewGuid();
+        var request = new MoveRequestDto { PlayerName = "Alice", Move = "Rock" };
+
+        _mockService.Setup(x => x.MakeMove(gameId, request))
+                    .ReturnsAsync(MoveResult.PlayerNotFound);
+
+        var result = await _controller.MakeMove(gameId, request);
+
+        Assert.IsType<BadRequestObjectResult>(result);
+    }
+    
+
+    [Fact]
+    public async Task MakeMove_ReturnsBadRequest_WhenInvalidMove()
+    {
+        Guid gameId = Guid.NewGuid();
+        var request = new MoveRequestDto { PlayerName = "Alice", Move = "RRock" };
+
+        _mockService.Setup(x => x.MakeMove(gameId, request))
+                    .ReturnsAsync(MoveResult.InvalidMove);
+
+        var result = await _controller.MakeMove(gameId, request);
+
+        Assert.IsType<BadRequestObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task MakeMove_ReturnsBadRequest_WhenPlayerAlreadyMoved()
+    {
+        Guid gameId = Guid.NewGuid();
+        var request = new MoveRequestDto { PlayerName = "Alice", Move = "Rock" };
+
+        _mockService.Setup(x => x.MakeMove(gameId, request))
+                    .ReturnsAsync(MoveResult.PlayerAlreadyMoved);
+
+        var result = await _controller.MakeMove(gameId, request);
+
+        Assert.IsType<BadRequestObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task MakeMove_ReturnsBadRequest_WhenGameAlreadyFinished()
+    {
+        Guid gameId = Guid.NewGuid();
+        var request = new MoveRequestDto { PlayerName = "Alice", Move = "Rock" };
+
+        _mockService.Setup(x => x.MakeMove(gameId, request))
+                    .ReturnsAsync(MoveResult.GameFinished);
+
+        var result = await _controller.MakeMove(gameId, request);
+
+        Assert.IsType<BadRequestObjectResult>(result);
+    }
 }
