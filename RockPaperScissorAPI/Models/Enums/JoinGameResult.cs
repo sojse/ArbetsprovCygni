@@ -4,4 +4,5 @@ public enum JoinGameResult
     Success,
     GameNotFound,
     GameAlreadyFull,
+    MustEnterUniqueName
 }
