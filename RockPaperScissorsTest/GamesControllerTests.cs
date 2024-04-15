@@ -106,6 +106,21 @@ public class GamesControllerTests
     }
 
     [Fact]
+    public async Task JoinGame_ReturnsBadRequest_WhenBothPLayersEnterSameName()
+    {
+        Guid gameId = Guid.NewGuid();
+        var request = new GameRequestDto { PlayerName = "Alice" };
+
+        _mockService.Setup(x => x.JoinGame(gameId, request.PlayerName))
+                    .ReturnsAsync(JoinGameResult.MustEnterUniqueName);
+
+        var result = await _controller.JoinGame(gameId, request);
+
+        var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+        Assert.Equal("Must enter unique name.", badRequestResult.Value);
+    }
+
+    [Fact]
     public async Task JoinGame_ReturnsBadRequest_WhenGameIsFull()
     {
         Guid gameId = Guid.NewGuid();
