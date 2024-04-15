@@ -1,5 +1,4 @@
-﻿using RockPaperScissorAPI.Models.Enums;
-using RockPaperScissorAPI.Utils;
+﻿using RockPaperScissorAPI.Utils;
 
 namespace RockPaperScissorAPI.Models.DTO;
 
