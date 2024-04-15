@@ -74,4 +74,49 @@ public class GamesControllerTests
         var badRequestResult = Assert.IsType<BadRequestObjectResult>(result.Result);
         Assert.Equal("Player name is required", badRequestResult.Value);
     }
+
+    [Fact]
+    public async Task JoinGame_ShouldAddPlayerToGame_WhenJoinedSuccesfully()
+    {
+        var request = new GameRequestDto { PlayerName = "Alice" };
+        var gameId = Guid.NewGuid();
+
+        _mockService.Setup(x => x.JoinGame(gameId, request.PlayerName))
+                    .ReturnsAsync(JoinGameResult.Success);
+
+        var result = await _controller.JoinGame(gameId, request);
+
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        Assert.Equal("Player joined successfully.", okResult.Value);
+
+    }
+
+    [Fact]
+    public async Task JoinGame_ReturnsGameNotFound_WhenGameDoesNotExist()
+    {
+        Guid gameId = Guid.NewGuid();
+        var request = new GameRequestDto { PlayerName = "Alice" };
+
+        _mockService.Setup(x => x.JoinGame(gameId, request.PlayerName))
+                    .ReturnsAsync(JoinGameResult.GameNotFound);
+
+        var result = await _controller.JoinGame(gameId, request);
+
+        Assert.IsType<NotFoundResult>(result);
+    }
+
+    [Fact]
+    public async Task JoinGame_ReturnsBadRequest_WhenGameIsFull()
+    {
+        Guid gameId = Guid.NewGuid();
+        var request = new GameRequestDto { PlayerName = "Alice" };
+
+        _mockService.Setup(x => x.JoinGame(gameId, request.PlayerName))
+                    .ReturnsAsync(JoinGameResult.GameAlreadyFull);
+
+        var result = await _controller.JoinGame(gameId, request);
+
+        var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+        Assert.Equal("The game is already full.", badRequestResult.Value);
+    }
 }
