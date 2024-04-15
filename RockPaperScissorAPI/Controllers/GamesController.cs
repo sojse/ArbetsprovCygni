@@ -49,21 +49,18 @@ public class GamesController : Controller
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<GameResponseDto>> CreateGame(GameRequestDto request)
     {
-        try
+        if(request == null || string.IsNullOrWhiteSpace(request.PlayerName))
         {
-            var newGame = await _gameService.CreateGame(request.PlayerName);
-            var gameResponse = new GameResponseDto
-            {
-                Id = newGame,
-            };
-
-            return Created("Game was created!", gameResponse);
-
+            return BadRequest("Player name is required");
         }
-        catch (Exception ex)
+   
+        var newGame = await _gameService.CreateGame(request.PlayerName);
+        var gameResponse = new GameResponseDto
         {
-            return BadRequest(ex.Message);
-        }
+        Id = newGame,
+        };
+        
+        return Created("Game was created!", gameResponse);
     }
 
     /// <summary>
