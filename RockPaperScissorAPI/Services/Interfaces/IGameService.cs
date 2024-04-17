@@ -9,4 +9,5 @@ public interface IGameService
     Task<string?> GetGameById(Guid id);
     Task<JoinGameResult> JoinGame(Guid gameId, string playerName);
     Task<MoveResult> MakeMove(Guid gameId, MoveRequestDto request);
+    Task CleanupExpiredGames();
 }

@@ -8,5 +8,6 @@ public class Game
     public required Player Player1 { get; set; }
     public Player? Player2 { get; set; }
     public Player? Winner { get; set; }
+    public DateTime LatestActiveTime { get; set; }
     public required GameState State { get; set; }
 }

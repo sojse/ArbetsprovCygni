@@ -1,10 +1,10 @@
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using RockPaperScissorAPI.Services.Interfaces;
-using RockPaperScissorAPI.Services.Repositories;
 using RockPaperScissorAPI.Services;
 using Microsoft.AspNetCore.RateLimiting;
 using System.Threading.RateLimiting;
+using RockPaperScissorAPI.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +15,7 @@ builder.Services.AddControllers();
 
 builder.Services.AddScoped<IGameService, GameService>();
 builder.Services.AddSingleton<IGameRepository, InMemoryGameRepository>();
+builder.Services.AddHostedService<GameCleanUpService>();
 
 builder.Services.AddRateLimiter((rateLimiterOptions =>
 {

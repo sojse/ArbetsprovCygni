@@ -23,7 +23,8 @@ public class GameService : IGameService
         {
             Id = gameId,
             Player1 = new Player { Name = playerName },
-            State = GameState.WaitingForPlayerToJoin
+            State = GameState.WaitingForPlayerToJoin,
+            LatestActiveTime = DateTime.UtcNow,
         };
 
         var game = await _gameRepository.CreateGame(newGame);
@@ -79,6 +80,7 @@ public class GameService : IGameService
 
         game.State = GameState.BothPlayersHaveJoined;
         game.Player2 = new Player { Name = playerName };
+        game.LatestActiveTime = DateTime.UtcNow;
 
         await _gameRepository.UpdateGame(game);
 
@@ -117,9 +119,24 @@ public class GameService : IGameService
             return validationResult;
         }
 
+        game.LatestActiveTime = DateTime.UtcNow;
+
         await _gameRepository.UpdateGame(game);
 
         return MoveResult.Success;
+    }
+
+    public async Task CleanupExpiredGames()
+    {
+        var currentTime = DateTime.UtcNow;
+        var games = await _gameRepository.GetGames();
+
+        var expiredGames = games.Where(game => (currentTime - game.LatestActiveTime).TotalHours >= 24).ToList();
+
+        foreach (var game in expiredGames)
+        {
+            await _gameRepository.DeleteGame(game.Id);
+        }
     }
 
     private string DetermineWinnerOrDraw(Game game)
