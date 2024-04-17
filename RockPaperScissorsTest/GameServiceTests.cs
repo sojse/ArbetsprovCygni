@@ -251,5 +251,27 @@ public class GameServiceTests
 
         Assert.Equal(MoveResult.GameFinished, result);
     }
+
+    [Fact]
+    public async Task CleanUpGames_RemovesGames_IfGameIsExpired()
+    {
+        var currentTime = DateTime.UtcNow;
+        var expiredGame = new Game { Id = Guid.NewGuid(), LatestActiveTime = currentTime.AddHours(-25),
+            Player1 = new Player { Name = "Sven" },
+            State = GameState.WaitingForPlayerToJoin
+        };
+        var activeGame = new Game { Id = Guid.NewGuid(), LatestActiveTime = currentTime.AddHours(-12),
+            Player1 = new Player { Name = "Jan" },
+            State = GameState.WaitingForPlayerToJoin
+        };
+
+        var games = new List<Game> { expiredGame, activeGame };
+        _mockRepository.Setup(repo => repo.GetGames()).ReturnsAsync(games);
+
+        await _gameService.CleanupExpiredGames();
+
+        _mockRepository.Verify(repo => repo.DeleteGame(expiredGame.Id), Times.Once);
+        _mockRepository.Verify(repo => repo.DeleteGame(activeGame.Id), Times.Never);
+    }
 }
 
