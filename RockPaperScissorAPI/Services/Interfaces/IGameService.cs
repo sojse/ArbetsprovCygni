@@ -1,7 +1,7 @@
 ﻿using RockPaperScissorAPI.Models.DTO;
 using RockPaperScissorAPI.Models.Enums;
 
-namespace RockPaperScissorAPI.Services;
+namespace RockPaperScissorAPI.Services.Interfaces;
 
 public interface IGameService
 {

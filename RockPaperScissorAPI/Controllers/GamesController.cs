@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.RateLimiting;
 using RockPaperScissorAPI.Models.DTO;
 using RockPaperScissorAPI.Models.Enums;
-using RockPaperScissorAPI.Services;
+using RockPaperScissorAPI.Services.Interfaces;
 
 namespace RockPaperScissorAPI.Controllers;
 

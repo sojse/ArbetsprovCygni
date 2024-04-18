@@ -3,7 +3,7 @@ using Moq;
 using RockPaperScissorAPI.Controllers;
 using RockPaperScissorAPI.Models.DTO;
 using RockPaperScissorAPI.Models.Enums;
-using RockPaperScissorAPI.Services;
+using RockPaperScissorAPI.Services.Interfaces;
 
 namespace RockPaperScissorsTest;
 
