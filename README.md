@@ -8,13 +8,16 @@ This part has responsibility for the responses and requests made to the API. DTO
 The game service contains all the game logic and for now uses the Game Repository to get and set data. 
 
 ### Game Repository
-The game repository stores the game state in a list in the memory. When the server is closed all memory is lost. The game repository is using the Singleton pattern, meaning that all objects using the game repository will use the same instance.
+The game repository stores the game state in a dictionary in the memory. When the server is closed all memory is lost. The game repository is using the Singleton pattern, meaning that all objects using the game repository will use the same instance.
 
 ### Revision Control
 The application is developed using Git. For each new feature that has been developed a new branch has been created. When the feature is done the feature branch has been merged into the main branch.
 
 ### Security
-The application comes with some basic security implementations. By default the application only accepts requests made by HTTPS. It has implemented basic input sanitation to prevent the risk for XSS attacks. There is also prepared for rate limiting to prevent the risk of DOS and DDOS attacks.  
+The application comes with some basic security implementations. By default the application only accepts requests made by HTTPS. It has implemented basic input sanitation to prevent the risk for XSS attacks. There is also prepared for rate limiting to prevent the risk of DOS and DDOS attacks.
+
+### Clean up service
+To handle the amount of games that are stored in memory a clean up service is run that deletes games that has not been active for some time. A game gets a new active time on creation, join game and make move. By default the clean up function is executed once every day and removes games that hasn't had any activities the latest 24 hours. 
 
 
 ## Frameworks
