@@ -56,6 +56,5 @@ To find documentation for the usage of the different endpoints, the parameters t
 
 ## Areas of improvement
 - The usage of an in memory repository offers limited future scalability. The data will also be lost in case of a system failure. For a production grade application some kind of database would be needed. In case of the need for data persistence there would be needed security measurements for this (i.e SQL Injections). in cases of integration to more systems more security measurments would also be needed for the output of the API. 
-- Some kind of limit would also be needed to handle unfinished games in the memory that takes up resources but wont be finished. The finished games also would need some kind of time limit for when they would automatically get deleted
 - The rate limiting that is implemented today only contains the default values and the default limit algorithm. Before going to production this would need to be reevaluted to meet the needs depending on amount of users etc. 
 - In case of changes to the API that will affect how the current clients will have to implement the API there will be a need to implement versioning in the API to enable old users to still use the API with it's old functionality. 
